@@ -1,0 +1,7 @@
+{
+  "terminal.explorerKind": "external",
+  "terminal.integrated.automationShell.windows": "",
+  "terminal.integrated.shellArgs.windows": ["/K", "C:\\Users\\Arsherlhl1\\anaconda3\\Scripts\\activate.bat C:\\Users\\Arsherlhl1\\anaconda3\\ & conda activate base"],
+  "terminal.integrated.shell.windows": "C:\\Windows\\System32\\cmd.exe",
+  "editor.wordWrap": "on"
+}
