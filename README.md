@@ -93,7 +93,12 @@ python detect_simple.py
 
 **Custom YOLOv4 Model Example**
 
-![](./images/1.png)
+![](./images/3.png)
+
+#### classes
+- car
+- license_plate
+- disabled_sticker
 
 Custom Functions and Flags
 --------------------------
