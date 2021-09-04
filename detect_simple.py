@@ -35,7 +35,7 @@ def Snapshot(loc):
 
 def main(img_paths):
   for img_path in img_paths:
-    t = time()
+    # t = time()
     img = cv2.imread(img_path)
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
@@ -70,7 +70,7 @@ def main(img_paths):
       result = Image.fromarray(result.astype(np.uint8))
       #image.show()
       result = cv2.cvtColor(np.array(result), cv2.COLOR_RGB2BGR)
-
+      
       if disabled == 1:
         if img_path =='camera1.jpg':
           cv2.imwrite('result_disabled1.png', result)
@@ -93,7 +93,7 @@ def main(img_paths):
         allowed_classes = ['license_plate']
 
         crop_path = './detections/crop/'+image_name
-        print('detect: ',time() - t)
+        # print('detect: ',time() - t)
         print("Cropped LP images in '{}' folder location.".format(crop_path))
         try:
             os.mkdir(crop_path)

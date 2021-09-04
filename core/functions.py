@@ -56,7 +56,7 @@ classnames = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
               ]
 
 def OCR(img):
-    t = time()
+    # t = time()
     args = {'image' : img, 'weights' : './ocr/weights_best.pb'}
 
     #tf.compat.v1.enable_eager_execution()
@@ -69,10 +69,10 @@ def OCR(img):
     x = np.expand_dims(resize_and_normailze(img), axis=0)
     
     carNum = net.predict(x, classnames)
-    #print(carNum)
-    print('ocr: ',time() - t)
-    #cv2.imshow("lp", img)
-    #cv2.waitKey(0)
+    # print(carNum)
+    # print('ocr: ',time() - t)
+    # cv2.imshow("lp", img)
+    # cv2.waitKey(0)
     cv2.destroyAllWindows()
     return carNum
 
