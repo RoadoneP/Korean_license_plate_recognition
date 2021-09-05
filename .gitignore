@@ -1,12 +1,7 @@
 checkpoints
 android
-camera1.jpg
-camera2.jpg
-result_disabled1.png
-result_disabled2.png
-result1.png
-result2.png
-*.mp4
+camera
+result
 detections
 *.weights
 /ocr/weights_best.pb.*

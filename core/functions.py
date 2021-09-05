@@ -3,7 +3,6 @@ import cv2
 import random
 import numpy as np
 import tensorflow as tf
-import datetime as dt
 
 from core.utils import read_class_names
 from core.config import cfg
@@ -19,8 +18,9 @@ def crop_objects(img, data, path, allowed_classes):
     boxes, scores, classes, num_objects = data
     class_names = read_class_names(cfg.YOLO.CLASSES)
     #create dictionary to hold count of objects for image name
-    jdict = dict()
+    jdict = [{} for i in range(3)]
     counts = dict()
+    idx = 0;
     for i in range(num_objects):
         # get count of class for part of image name
         class_index = int(classes[i])
@@ -33,18 +33,20 @@ def crop_objects(img, data, path, allowed_classes):
             location = loc(img, xmin, xmax)
             #print(location)
             # crop detection from image (take an additional 5 pixels around all edges)
-            cropped_img = img[int(ymin)-3:int(ymax)+3, int(xmin)-3:int(xmax)+3]
+            cropped_img = img[int(ymin):int(ymax), int(xmin):int(xmax)]
             # construct image name and join it to path for saving crop properly
             img_name = class_name + '_' + str(counts[class_name]) + '.jpg'
             img_path = os.path.join(path, img_name)
             # save image
             cv2.imwrite(img_path, cropped_img)
-            carNum = OCR(img_path)
-            count = {"carNum" : carNum, "classify" : is_electric_car, "location" : location, "time" : dt.datetime.now().strftime('%Y-%m-%d %H:%M:%S'), "credit" : scores[i], "inOut": True }   
+            carNum, prob = OCR(img_path)
+            count = {"carNum" : carNum[0], "electric_car" : is_electric_car, "disabled_car" : 0, "location": location, "credit": prob}
+            jdict[idx] = count
+            idx +=1   
         else:
             continue
         
-        jdict[i] = count
+        
         
     return jdict
         
@@ -68,13 +70,13 @@ def OCR(img):
     
     x = np.expand_dims(resize_and_normailze(img), axis=0)
     
-    carNum = net.predict(x, classnames)
+    carNum, score = net.predict(x, classnames)
     # print(carNum)
     # print('ocr: ',time() - t)
     # cv2.imshow("lp", img)
     # cv2.waitKey(0)
     cv2.destroyAllWindows()
-    return carNum
+    return carNum, score
 
 def loc(image, xmin, xmax):
   image_h, image_w, _ = image.shape
@@ -82,7 +84,7 @@ def loc(image, xmin, xmax):
   xmax = xmax/image_w
   center = (xmin + xmax) / 2
  
-  if center>=0 and center < 0.33:
+  if center > 0 and center < 0.33:
     loc = "A1"
   elif center>=0.33 and center< 0.66:
     loc = "A2"
@@ -90,6 +92,7 @@ def loc(image, xmin, xmax):
     loc = "A3"
 
   return loc
+
 
 def electric_car(image, bbox):
   xmin, ymin, xmax, ymax = bbox
