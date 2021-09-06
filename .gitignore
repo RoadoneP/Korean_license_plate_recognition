@@ -7,3 +7,6 @@ detections
 /ocr/weights_best.pb.*
 venv
 *.ipynb
+.idea
+.vscode
+__pycache__
