@@ -23,8 +23,8 @@ def detect_Snapshot(loc):
   return img_path
 
 def mqtt():
-  location = "A3"
-  In_out = "Out"
+  location = "A1"
+  In_out = "In"
   floor = "B1"
   return location, In_out, floor
 
