@@ -18,7 +18,7 @@ def crop_objects(img, data, path, allowed_classes):
     boxes, scores, classes, num_objects = data
     class_names = read_class_names(cfg.YOLO.CLASSES)
     #create dictionary to hold count of objects for image name
-    jdict = [{} for i in range(3)]
+    jdict = [{"location": f"A{i+1}", "inOut": "out"} for i in range(3)]
     counts = dict()
     idx = 0;
     for i in range(num_objects):
@@ -40,9 +40,8 @@ def crop_objects(img, data, path, allowed_classes):
             # save image
             cv2.imwrite(img_path, cropped_img)
             carNum, prob = OCR(img_path)
-            count = {"carNum" : carNum[0], "electric_car" : is_electric_car, "disabled_car" : 0, "location": location, "credit": prob}
-            jdict[idx] = count
-            idx +=1   
+            count = {"location": location, "inOut": "in", "carNum" : carNum[0], "electric" : is_electric_car, "disabled" : 0, "credit": prob}
+            jdict[int(location[-1])-1] = count
         else:
             continue
         

@@ -1,5 +1,6 @@
+#-*- coding:utf-8 -*-
 import os
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+# os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
 import tensorflow as tf
 import core.utils as utils
@@ -30,7 +31,7 @@ def detect(img_path, state):
   img_input = tf.constant(img_input)
   # loc 찾기
   print(state)
-  if state == "A1" or state == "All":
+  if state == "A1" or state == "snapshot":
     selected_model = MODEL_PATH
     print("A1 or All")
   else:
@@ -81,7 +82,7 @@ def detect(img_path, state):
 
       crop_path = './detections/crop/'+image_name
       # print('detect: ',time() - t)
-      print("Cropped LP images in '{}' folder location.".format(crop_path))
+      print("OCR Start")
       try:
           os.mkdir(crop_path)
       except FileExistsError:
@@ -110,10 +111,8 @@ def detect(img_path, state):
       center = (xmin + xmax) / 2
       # is disabled Sticker in location "A1"?
       if center > 0 and center < 0.33:
-        if(jdict[0]['location'] == 'A1'):
-          jdict[0]['disabled_car']=1
+          if jdict[0]['inOut'] == 'in':
+            jdict[0]['disabled']=1
       print("disabled 완료")
    
   return jdict
-
-
