@@ -9,12 +9,16 @@ import threading
 import queue
 import datetime as dt
 from pprint import pprint
+import json
+import re
 
 import boto3
 from botocore.exceptions import ClientError
 import os 
 
 # IAM ID, Key Setting
+my_id = ''
+my_key = ''
 
 q = queue.Queue()
 
@@ -78,23 +82,24 @@ def start(location, info):
     In_out = info["type"]
     jdict = dict()
 
-    img_path = detect_Snapshot(camera)
-    #img_path = './camera/camera2.jpg'
-
+    #img_path = detect_Snapshot(camera)
+    img_path = './camera/camera1.jpg'
+    jdict["info"] = info
     if location != "snapshot":
         info["type"] = "parking"
         if In_out == "In":
             data = detect(img_path, location)
             data = data[int(location[-1])-1]
         elif In_out == "Out":
-            data = {"location": location, "inOut": "out"}   
+            data = {"location": location, "inOut": "out"}
         
-    else:
-        data = detect(img_path, location)
+        jdict["data"] = [data]
+
+        return jdict
     
-    jdict["info"] = info
+    data = detect(img_path, location)
     jdict["data"] = data
-    pprint(jdict)
+    return jdict 
 
 def subscribing():
     client.on_message = on_message
@@ -122,7 +127,8 @@ def event_queue():
         print("=============================")
         print(f"detect start : {location}")
         print("=============================")
-        start(location, info)
+        jdict = start(location, info) # snapshot A1 A2 A3
+        saved_json_image(jdict)
         print("=============================")
         print(f"detect {location} end")
         print("=============================")
@@ -154,18 +160,28 @@ def create_s3_bucket(bucket_name):
         else:
             print("Unknown error, exit..")   
 
-def saved_json_image():
-  response = create_s3_bucket("myawsbucket-jaehwan") # Bucket Name Setting
+def saved_json_image(jdict):
+  response = create_s3_bucket("parking-management-s3") # Bucket Name Setting
   print("Bucket : " + str(response))
-
-  input_path = "assets\\*"
-
-  files = glob.glob(input_path) # Always same directory
-  stored_names =  list(map(lambda x: x.split("\\")[1], files)) # json: B1_YYYY:MM:DD_HH:MM:SS_A1.json, image: YYYY:MM:DD_HH:MM:SS_A1.jpg
-
+  files = []
+  stored_names = []
+  section = jdict['info']['section'][-1]
+  for i in range(len(jdict['data'])):
+    if jdict['data'][i]['inOut'] == 'in':
+      loc = jdict['data'][i]['location'][-1]
+      files.append(f'./detections/crop/camera{section}/license_plate_{loc}.jpg')
+      numbers = re.sub(r'[^0-9]', '', jdict['info']['createdAt'])
+      img_Url = f"carImg/{numbers}_A{loc}.jpg"
+      json_Url = f"carData/{numbers}.json"
+      jdict['data'][i]['imgUrl'] = img_Url
+      stored_names.append(img_Url)
+  pprint(jdict)
   for file, stored_name in zip(files, stored_names):
-      print(files, stored_names)
-      # s3.upload_file(file, "myawsbucket-jaehwan", stored_name)
+      print(file, stored_name)
+      s3.upload_file(file, "parking-management-s3", stored_name)
+  with open("./result/data.json", "w") as f:
+    json.dump(jdict, f)
+  s3.upload_file("./result/data.json", "parking-management-s3", json_Url)
 
 if __name__ == '__main__':
     
@@ -189,4 +205,5 @@ if __name__ == '__main__':
     '''
     
     info = {"parkingLotIndex" : 1, "section" : "B1", "type": "In", "createdAt": dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
-    start("snapshot",info)
+    jdict = start("A1",info)
+    saved_json_image(jdict)

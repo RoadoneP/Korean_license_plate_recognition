@@ -75,7 +75,7 @@ def OCR(img):
     # cv2.imshow("lp", img)
     # cv2.waitKey(0)
     cv2.destroyAllWindows()
-    return carNum, score
+    return carNum, float(score)
 
 def loc(image, xmin, xmax):
   image_h, image_w, _ = image.shape
