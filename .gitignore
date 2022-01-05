@@ -1,8 +1,10 @@
-checkpoints/*
+checkpoints/yolov4-416/*
+checkpoints/yolov4-416-disabled
+checkpoints/*.tflite
+checkpoints/*.weights
 android
 camera
 result
-detections/*
 *.weights
 /ocr/weights_best.pb.*
 venv

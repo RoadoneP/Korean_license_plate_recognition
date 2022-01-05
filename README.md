@@ -1,7 +1,5 @@
 **Korean car license plate recognition using LPRNet**
 -----------------------------------------------------
-[Jaehwan Lee](https://github.com/jhlee508), [GilHan Park](https://github.com/RoadoneP)
-
 If you have any errors or questions, please contact a01152a@gmail.com
 
 Detection
@@ -88,8 +86,20 @@ python save_model.py --weights ./data/yolov4.weights --output ./checkpoints/yolo
 python convert_tflite.py --weights ./checkpoints/yolov4-416 --output ./checkpoints/yolov4-416.tflite
 
 # detect.
-python detect_simple.py
+python detect.py --framework tflite --weights ./checkpoints/yolov4-416.tflite --image [IMAGE_PATH] --lpr
 ```
+
+### Result
+
+![](./images/5.png)
+
+If you execute,
+```
+python detect.py --framework tflite --weights ./checkpoints/yolov4-416.tflite --image [IMAGE_PATH] --lpr
+```
+you can see the result on terminal.
+
+and crop images are saved in <ins>detections path</ins>  
 
 **Custom YOLOv4 Model Example**
 
