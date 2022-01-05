@@ -13,6 +13,7 @@ Download Model
 -------------
 **Detect**
 - `.weights` : https://drive.google.com/file/d/1b3rYgP48z_NGvSuNoMKDvxXzYmray_Qr/view?usp=sharing
+
 **LPR**
 - `.pb` : https://drive.google.com/drive/folders/1TV-FuPiK45RKl6P7yNGsK3EJlx_D7hjS?usp=sharing
 
