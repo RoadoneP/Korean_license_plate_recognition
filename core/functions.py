@@ -20,7 +20,7 @@ def crop_objects(img, data, path, allowed_classes):
     #create dictionary to hold count of objects for image name
     jdict = [{"location": f"A{i+1}", "inOut": "out"} for i in range(3)]
     counts = dict()
-    idx = 0;
+    idx = 0
     for i in range(num_objects):
         # get count of class for part of image name
         class_index = int(classes[i])
@@ -35,7 +35,7 @@ def crop_objects(img, data, path, allowed_classes):
             # crop detection from image (take an additional 5 pixels around all edges)
             cropped_img = img[int(ymin):int(ymax), int(xmin):int(xmax)]
             # construct image name and join it to path for saving crop properly
-            img_name = class_name + '_' + str(counts[class_name]) + '.jpg'
+            img_name = class_name + '_' + str(location[-1]) + '.jpg'
             img_path = os.path.join(path, img_name)
             # save image
             cv2.imwrite(img_path, cropped_img)

@@ -14,18 +14,19 @@ import numpy as np
 from tensorflow.compat.v1 import ConfigProto
 from tensorflow.compat.v1 import InteractiveSession
 
-flags.DEFINE_string('framework', 'tf', '(tf, tflite, trt')
-flags.DEFINE_string('weights', './checkpoints/yolov4-416',
+flags.DEFINE_string('framework', 'tflite', '(tf, tflite, trt')
+flags.DEFINE_string('weights', './checkpoints/yolov4-416.tflite',
                     'path to weights file')
 flags.DEFINE_integer('size', 416, 'resize images to')
 flags.DEFINE_boolean('tiny', False, 'yolo or yolo-tiny')
 flags.DEFINE_string('model', 'yolov4', 'yolov3 or yolov4')
-flags.DEFINE_string('video', 'parking.mp4', 'path to input video')
+flags.DEFINE_string('video', '0', 'path to input video')
 flags.DEFINE_float('iou', 0.45, 'iou threshold')
 flags.DEFINE_float('score', 0.25, 'score threshold')
 flags.DEFINE_string('output', None, 'path to output video')
 flags.DEFINE_string('output_format', 'XVID', 'codec used in VideoWriter when saving video to file')
 flags.DEFINE_boolean('dis_cv2_window', False, 'disable cv2 window during the process') # this is good for the .ipynb
+url = 'rtsp://admin:gksdldma123!@192.168.0.23/'
 
 def main(_argv):
     config = ConfigProto()
@@ -36,7 +37,7 @@ def main(_argv):
     video_path = FLAGS.video
 
     print("Video from: ", video_path )
-    vid = cv2.VideoCapture(video_path)
+    vid = cv2.VideoCapture(url)
 
     if FLAGS.framework == 'tflite':
         interpreter = tf.lite.Interpreter(model_path=FLAGS.weights)

@@ -1,11 +1,14 @@
-checkpoints
+checkpoints/*
 android
 camera
 result
-detections
+detections/*
 *.weights
 /ocr/weights_best.pb.*
 venv
+detect_simple.py
+detect_simple2.py
+main.py
 *.ipynb
 .idea
 .vscode
